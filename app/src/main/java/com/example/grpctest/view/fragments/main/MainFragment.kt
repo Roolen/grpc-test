@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.grpctest.data.ClientsService
 import com.example.grpctest.databinding.FragmentMainBinding
+import com.example.grpctest.utils.Success
 
 class MainFragment : Fragment() {
     private lateinit var binding: FragmentMainBinding
@@ -22,14 +23,16 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.loadMessage(ClientsService.getGreeter())
+        viewModel.loadMessage(ClientsService.GreeterClient)
 
         setObservers()
     }
 
     private fun setObservers() {
-        viewModel.message.observe(viewLifecycleOwner) { message ->
-            binding.message.text = message
+        viewModel.message.observe(viewLifecycleOwner) { result ->
+            if (result is Success) {
+                binding.message.text = result.data
+            }
         }
     }
 }
